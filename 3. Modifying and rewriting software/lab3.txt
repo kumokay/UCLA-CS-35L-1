@@ -1,0 +1,165 @@
+Michael Gee 004800083 
+
+I first get the coreutils tar file by using:
+wget ftp://ftp.gnu.org/gnu/coreutils/coreutils-7.6.tar.gz
+
+I then unzip the tar file to get the coreutils
+ content using the command I learned:
+
+tar -xvzf coreutils-7.6.tar.gz
+
+I then make my own temporary directory using the command:
+mkdir pene
+
+I then see that there is also a coreutils-7.6 directory that I 
+need to run the configure command with so I install it in the 
+directory with the command. 
+
+./configure --prefix=/u/cs/ugrad/michaelg/pene
+
+I then make and make install to install coreutils 
+
+make 
+make install
+
+I then change directories to ~/pene and see that there 
+are three directories. We need to export the buggy
+locale by doing this:
+
+export LC_ALL='en_US.UTF-8'
+
+This allows us to 
+I then run the command that allows us to run the
+coreutils ls command:
+
+./ls -l 
+
+which is installed in /usr/bin and see that it gets the date in 
+
+YYYY-MM-DD format rather than traditional Unix date. 
+
+To attempt to fix this, I go back to my coreutils-7.6 
+
+I then go back and create the patch file by copying  
+and pasting the diff part of Brady's email into a file with vim
+then ran the patch with the command
+
+path -p1 < patchfile
+
+The -p1 enables me to take away the leading slash from the file. I 
+then run the make command again within the 
+coreutils-7.6 directory. We see that the commands are a lot shorter 
+and many were actually unnecessary. The only thing it did was 
+recompile the things that were changed. It also goes through the 
+directories recursively but only changes the content in the
+src folder and in the man folder. 
+
+
+//Some are cut off on purpose to satisify theno more than
+80 column per line rule
+
+make  all-recursive
+make[1]: Entering directory '/w/home.11/cs/ugrad/michaelg/coreutils-7.6'
+Making all in lib
+make[2]: Entering directory '/w/home.11/cs/ugrad/michaelg/coreutils-7.6/lib'
+make  all-recursive
+make[3]: Entering directory '/w/home.11/cs/ugrad/michaelg/coreutils-7.6/lib'
+make[4]: Entering directory '/w/home.11/cs/ugrad/michaelg/coreutils-7.6/lib'
+make[4]: Leaving directory '/w/home.11/cs/ugrad/michaelg/coreutils-7.6/lib'
+make[3]: Leaving directory '/w/home.11/cs/ugrad/michaelg/coreutils-7.6/lib'
+make[2]: Leaving directory '/w/home.11/cs/ugrad/michaelg/coreutils-7.6/lib'
+Making all in src
+make[2]: Entering directory '/w/home.11/cs/ugrad/michaelg/coreutils-7.6/src'
+make  all-am
+make[3]: Entering directory '/w/home.11/cs/ugrad/michaelg/coreutils-7.6/src'
+  CC     ls.o
+  CCLD   dir
+  CCLD   vdir
+  CCLD   ls
+make[3]: Leaving directory '/w/home.11/cs/ugrad/michaelg/coreutils-7.6/src'
+make[2]: Leaving directory '/w/home.11/cs/ugrad/michaelg/coreutils-7.6/src'
+Making all in doc
+make[2]: Entering directory '/w/home.11/cs/ugrad/michaelg/coreutils-7.6/doc'
+make[2]: Nothing to be done for 'all'.
+make[2]: Leaving directory '/w/home.11/cs/ugrad/michaelg/coreutils-7.6/doc'
+Making all in man
+make[2]: Entering directory '/w/home.11/cs/ugrad/michaelg/coreutils-7.6/man'
+  GEN    dir.1
+  GEN    vdir.1
+  GEN    ls.1
+make[2]: Leaving directory '/w/home.11/cs/ugrad/michaelg/coreutils-7.6/man'
+Making all in po
+make[2]: Entering directory '/w/home.11/cs/ugrad/michaelg/coreutils-7.6/po'
+make[2]: Nothing to be done for 'all'.
+make[2]: Leaving directory '/w/home.11/cs/ugrad/michaelg/coreutils-7.6/po'
+Making all in tests
+make[2]: Entering directory '/w/home.11
+/cs/ugrad/michaelg/coreutils-7.6/tests'
+make[2]: Nothing to be done for 'all'.
+make[2]: Leaving directory '/w/home.11
+/cs/ugrad/michaelg/coreutils-7.6/tests'
+Making all in gnulib-tests
+make[2]: Entering directory '/w/home.11/cs
+/ugrad/michaelg/coreutils-7.6/gnulib-tests'
+make  all-recursive
+make[3]: Entering directory '/w/home.11/cs
+/ugrad/michaelg/coreutils-7.6/gnulib-tests'
+make[4]: Entering directory '/w/home.11/cs
+/ugrad/michaelg/coreutils-7.6/gnulib-tests'
+make[4]: Nothing to be done for 'all-am'.
+make[4]: Leaving directory '/w/home.11/cs
+/ugrad/michaelg/coreutils-7.6/gnulib-tests'
+make[3]: Leaving directory '/w/home.11/cs/
+ugrad/michaelg/coreutils-7.6/gnulib-tests'
+make[2]: Leaving directory '/w/home.11/cs
+/ugrad/michaelg/coreutils-7.6/gnulib-tests'
+make[2]: Entering directory '/w/home.11/cs/ugrad/michaelg/coreutils-7.6'
+make[2]: Nothing to be done for 'all-am'.
+make[2]: Leaving directory '/w/home.11/cs/ugrad/michaelg/coreutils-7.6'
+make[1]: Leaving directory '/w/home.11/cs/ugrad/michaelg/coreutils-7.6'
+
+
+I then make two test files and check whether the 
+patch has been applied. The first one is a recently
+created file and the second one will be one over a 
+year old: 
+
+touch recfile
+
+and 
+
+touch -t 1111111111 oldfile 
+
+I then run both the buggy ls as well as the ls that
+ has been patched and we 
+get two different outputs. We see the buggy output
+for bin/ls -l because we did not use 
+make install and simply just used make. 
+
+I used this for the buggy ls
+../pene/bin/ls -l
+
+and used this for the patched ls
+./src/ls -l
+
+This shows that we have both executables existing at
+the same time while testing and did not
+overwrite a buggy executable. 
+
+Buggy: 
+
+ 2018-02-01 21:43 patchfile
+2011-11-11 11:11 oldfile
+
+Patched: 
+
+Feb  1 21:43 patchfile
+Nov 11  2011 oldfile
+
+The output for the patched one appears to be in traditional Unix 
+format. We see that the difference within the patched ls is that 
+recently updated file shows the time last modified while the old 
+file which is older than a year shows the year it was last modified. 
+
+For the buggy ls it still has the YYYY-MM-DD format with the time
+modified shown for both of them. The format is nearly identical.   

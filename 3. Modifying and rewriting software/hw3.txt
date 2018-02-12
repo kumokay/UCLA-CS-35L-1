@@ -1,0 +1,43 @@
+1) 
+
+Brady's patch essentially removes the line because 
+there was the exact same expression right next to 
+it. Thus he wanted to remove it in order to clean
+up the code and avoid redundancy. 
+
+2) 
+
+The company would need to address the issue
+of users in different countries where they would not 
+understand English (The months are spelled in English). 
+In addition the English date format is different from
+how other countries post their dates. Thus if I'm 
+running a company with people who are getting used 
+to English, I would need to clarify what the date
+is formmated like. 
+
+
+3) 
+
+If this invoked on an empty file, we will get an IndexError: 
+list index out of range because the program has no lines for
+the script to get. What the program
+essentially does is  treat each line as items
+for a list. But the problem occurs when try to access index [0] 
+on something that is not there or is essentially empty
+
+4) 
+
+If the script runs Python 3 rather than Python 2, the error
+I get is IOError as (errno, strerror): 
+This happens because it has incorrect syntax and 
+that according to StackOverFlow it says that it should be
+changed to :
+"except IOError as err;" 
+Python 3 no longer allows what is
+known as "iteration over exceptions unlike Python 2 which does
+have it. 
+
+
+
+

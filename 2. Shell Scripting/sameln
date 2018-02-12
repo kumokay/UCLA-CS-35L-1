@@ -1,0 +1,57 @@
+#!/bin/bash
+
+dir=$1
+directory=`ls -a $dir | sort`
+IFS=$'\n'
+
+for file in $directory 
+do 
+    for file2 in $directory
+    do
+#See file symbolic link, continue
+if [ -L "$file" ] || [ -L "$file2" ] 
+then 
+    continue
+fi
+#See directory continue. 
+if [ -d "$file" ] || [ -d "$file2" ]
+then 
+    continue
+fi
+
+    #If they are duplicates 
+if [ "$file" != "$file2" ]
+then
+        
+
+    #Checks whether the file1 both are files,then continue
+    if [ -f "$file" ] && [ -f "$file2" ]
+    then
+   
+        cmp -s "$file" "$file2"
+        if [ $? -eq 0 ]
+	then
+             
+	     #File 2 has a . remove file 1 
+	     if [ ${file:0:1} != '.' ] && [ ${file2:0:1} == '.' ]
+             then 
+                 rm "$file"
+                 ln "$file2" "$file"
+	     #File 1 has a . remove file 2 
+             elif [ ${file:0:1} == '.' ] && [ ${file2:0:1} != '.' ]
+             then
+                 rm "$file2"
+                 ln "$file" "$file2"
+             elif [[ "$file" < "$file2" ]] 
+             then
+                 rm "$file2"
+                 ln "$file" "$file2"
+             else
+                 rm "$file"
+                 ln "$file2" "$file"
+              fi
+	  fi
+     fi
+fi              
+    done
+done
