@@ -1,0 +1,158 @@
+004800083 Michael Gee
+
+
+1. I used the 'man' command with a -k flag,
+followed by the word that I need to be found. 
+
+man -k printf
+The command above prints out all the commands with the specific word 'printf'
+In order to find this, I read the manual using man man. 
+
+Keystrokes:
+man man 
+man -k printf
+
+2. 
+The cp program is located in /usr/bin/cp
+The wc program is located in /usr/bin/wc
+
+Keystrokes:
+whereis cp 
+whereis wc
+
+3. /usr/bin/[ 
+It is a shell builtin command and an executable for conditional tests. 
+
+/usr/bin/w
+Show's who is currently logged in and what they are doing. 
+
+/usr/bin/X
+This is a portable, network-transparent window system.
+
+Keystrokes:
+man find
+find /usr/bin -executable -name '?' 
+
+4. The actual file executed is: /usr/bin/emacs-24.3 
+This is because /usr/bin/emacs is a soft
+ link to /etc/alternatives/emacs, which is
+also a soft link to /usr/bin/emacs-24.3. 
+
+Keystrokes: 
+cd /usr/bin
+ls -l emacs*
+cd /etc/alternatives
+ls -l emacs*
+cd /usr/bin
+ls -l emacs*
+
+5. The symbolic mode g+s,o-x means to set a group
+ ID upon execution, while removing the permission to execute file for others. 
+
+Keystrokes: 
+
+man chmod 
+chmod g+s,o-x hwahfile  
+
+6. find -mtime -21 
+
+The '-mtime' flag, followed by '-21'
+lets me search for files that
+were modified less than 21 * 24 hours ago. 
+
+Keystrokes:
+man find
+find -mtime -21 
+
+7. find -mtime -21 -type d
+
+   Keystrokes:
+   man find
+   find -mtime -21 -type d
+
+8. 293
+
+Keystrokes:
+
+whereis find
+cd /usr/bin
+find -type l | wc -l
+
+9. Go into the /usr/lib directory 
+and then use the ls -t and
+ls -alt command to get the oldest folder to be -rwxr-xr-x 
+1 root root   18692 Jan 26  2014 libgpg-error.so.0.10.0. 
+
+So we can calculate this file to be 3 years 11 months and 352 days old.
+
+Keystrokes:
+cd /usr/lib 
+ls -alt 
+
+10.
+The locale command gets the data based on the settings on
+the environment variables that control the locale. I used
+the command man locale in order to learn about this. 
+
+11. 
+Buffer-menu-sort
+sort-columns
+sort-fields
+sort-lines
+sort-numeric-fields
+sort-pages
+sort-paragraphs
+sort-regexp-fields
+tabulated-list-col-sort
+tabulated-list-sort
+
+Keystrokes: 
+C-h a sort 
+
+12. 
+
+I start off every command with C-h k 
+
+Then I type in the keystrokes I get these:
+
+C-M-a beginning-of defun: Move back to beginning or preceding defun 
+
+C-M-b backward-sexp: Move back over a  balanced expression 
+
+C-M-c exit-recursive-edit: Exit from innermost recursive edit or minibuffer.
+
+C-M-d down-list: Move forward one level of parentheses 
+
+C-M-e end-of-defun: Move forward to end of the defun.  
+
+C-M-f: forward-sexp: Move forward one balanced expression
+
+C-M-h  Puts the mark at the end of this defun.
+It puts the region around whole current or follwing defun.  
+
+
+13. 
+During execution of Lisp code, this character causes a quit directly.
+At top-level, as an editor command, this simply beeps.
+It is used to clear the mini-buffer.  
+
+Keystrokes:
+C-h k C-g 
+
+14. 
+Yanking recovers the most recently killed text. 
+
+Keystroke: C-h k C-g 
+
+15.    
+The difference is that the dired command will
+show hidden files.
+ In addition,
+ The dired command allows you to interact
+ and operate on files, delete files, etc.
+ The list command simply lists the files and its information as an output. 
+
+Keystroke: 
+cd /usr/bin
+ls -l
+emacs C-x d /usr/bin
