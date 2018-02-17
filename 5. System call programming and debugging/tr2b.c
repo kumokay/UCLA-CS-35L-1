@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdbool.h>
+#include <string.h>
 
 //Checks for errors
 void checkError()
@@ -9,6 +10,7 @@ void checkError()
   {
     fprintf(stderr, "Error in reading stdin");
     exit(1);
+  }
 }
 
 int main(int argc, char *argv[])
@@ -58,7 +60,7 @@ int main(int argc, char *argv[])
       }
     }
 
-    if (!flag)
+    if (flag)
     {
       putchar(curr);
     }
