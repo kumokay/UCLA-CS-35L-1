@@ -1,12 +1,13 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <errno.h>
+#include <string.h>
 #include <sys/stat.h>
 #include <ctype.h>
 #include <unistd.h>
 #include <getopt.h>
 
-//Global record for -f option
+//Global option
 int option = 0;
 
 char decodeChar (const char c)
@@ -15,19 +16,26 @@ char decodeChar (const char c)
     {
         return c^42;
     }
-    else
-    {
-        unsigned int temp;
-        temp = (unsigned int) c^42;
-        if ( (option == 1) && (temp > 64) && (temp < 91))
-        {
-            temp = toupper(temp);
-            char temp_c = (char) temp;
-            return temp_c^42;
-        }
-        return
-            c^42;
-    }
+}
+//Upper case
+int frobcmpUp(unsigned char const* a,unsigned char const* b)
+{
+  for(;; a++, b++)
+  {
+    char upperA = *a ^ 42;
+    char upperB = *b ^ 42;
+
+    if ((toupper(upperA)) < (toupper(upperB)))
+      return -1;
+    else if((toupper(upperA)) > toupper(upperB))
+      return 1;
+    else if(*a == ' ' && *b == ' ')
+      return 0;
+    else if (*a != ' ' && *b == ' ')
+      return 1;
+    else if (*a == ' ' && *b != ' ')
+      return -1;
+   }
 }
 
 int frobcmp (char const *a1, char const *b1)
@@ -56,30 +64,37 @@ int cmp (const void *a, const void *b)
   return frobcmp (a1, b1);
 }
 
+int cmpUp (const void *a, const void *b)
+{
+  const char *a1 = *(const char **) a;
+  const char *b1 = *(const char **) b;
+  return frobcmpUp(a1, b1);
+}
+
 int main (int argc, char **argv)
 {
-    int return_val = 0;
+   //If -f option used.
+  if (argc == 2 && strcmp(argv[1], "-f") == 0)
+    option = 1;
 
-    if((return_val = getopt(argc, argv, "f")) != -1) 
-    {
-        if (return_val == 'f') 
-            option = 1;
-    }
-    
+  struct stat fileS;
+
+  if(fstat(0,&fileS) < 0)
+  {
+    fprintf(stderr, "Unable to read info");
+    exit(1);
+  }
+  
   char *tempfile;
-
   char * currentW = (char*)malloc(sizeof(char));
   char **allWords = (char**)malloc(sizeof(char*));
-
   int lNumber = 0;
   int wNumber = 0;
-
   char currchar;
   char nextchar;
   
-  struct stat fileS;
-  fstat (0, &fileS);
-
+  //High level: Very similar to the last one. Except we now realloc
+  //and compare fileS's size. 
   if (S_ISREG (fileS.st_mode))
     {
       tempfile = (char*)malloc(sizeof(char)*(fileS.st_size+2));
@@ -88,17 +103,18 @@ int main (int argc, char **argv)
       currchar = tempfile[0];
       nextchar = tempfile[1];
       
-      for (int i=2; i < fileS.st_size+2; i++)
+      for (int counter=2; counter < fileS.st_size+2; counter++)
       {
           currentW[lNumber] = currchar;
-          char *temparr = realloc(currentW, sizeof(char)*(lNumber+2));
-          if (temparr == NULL)
+          char *usage = realloc(currentW, sizeof(char)*(lNumber+2));
+          if (usage != NULL)
           {
-              fprintf(stderr, "MEMORY ERROR");
-              exit (1);
+	      currentW = usage;
           }
-          
-          currentW = temparr;
+          else{
+	    fprintf(stderr, "NULL");
+	    exit (1);
+	  }
           
           if (currchar == ' ')
           {
@@ -107,7 +123,7 @@ int main (int argc, char **argv)
               
               if (temp_list == NULL)
               {
-                  fprintf (stderr, "MEMORY ERROR");
+                  fprintf (stderr, "Null");
                   exit (1);
               }
               
@@ -119,16 +135,16 @@ int main (int argc, char **argv)
               
               if (currentW == NULL)
               {
-                  fprintf (stderr, "MEMORY ERROR");
+                  fprintf (stderr, "Null");
                   exit (1);
               }
               lNumber = -1;
           }
           
-        if (currchar == ' ' && (i >= fileS.st_size))
+        if (currchar == ' ' && (counter >= fileS.st_size))
           break;
         
-        else if (currchar != ' ' && (i >= fileS.st_size))
+        else if (currchar != ' ' && (counter >= fileS.st_size))
         {
             currchar = ' ';
             lNumber++;
@@ -136,7 +152,7 @@ int main (int argc, char **argv)
         }
         
         currchar = nextchar;
-        nextchar = tempfile[i];
+        nextchar = tempfile[counter];
         lNumber++;
       }
     }
@@ -144,19 +160,19 @@ int main (int argc, char **argv)
     currentW = NULL;
     currentW = (char*)malloc(sizeof(char));
     
-    int file_state1 = read(0, &currchar, 1);
-    int file_state2 = read(0, &nextchar, 1);
+    int see = read(0, &currchar, 1);
+    int see2 = read(0, &nextchar, 1);
     
     lNumber = 0;
     
-    while(file_state1 > 0)
+    while(see > 0)
     {
         currentW[lNumber] = currchar;
         char *temparr = realloc(currentW,sizeof(char)*(lNumber+2));
         
         if (temparr == NULL)
         {
-            fprintf (stderr, "MEMORY ERROR");
+            fprintf (stderr, "Null");
             exit (1);
         }
         currentW = temparr;
@@ -169,7 +185,7 @@ int main (int argc, char **argv)
               
               if (temp_list == NULL)
               {
-                  fprintf (stderr, "MEMORY ERROR");
+                  fprintf (stderr, "Null");
                   exit (1);
               }
               
@@ -181,17 +197,17 @@ int main (int argc, char **argv)
               
               if (currentW == NULL)
               {
-                  fprintf(stderr, "MEMORY ERROR");
+                  fprintf(stderr, "Null");
                   exit (1);
               }
               
               lNumber = -1;
           }
         
-        if (currchar == ' ' && file_state2 < 1)
+        if (currchar == ' ' && see2 < 1)
           break;
           
-        else if (currchar != ' ' && file_state2 < 1)
+        else if (currchar != ' ' && see2 < 1)
         {
             currchar = ' ';
             lNumber++;
@@ -199,28 +215,36 @@ int main (int argc, char **argv)
         }
         
         currchar = nextchar;
-        file_state2 = read(0, &nextchar, 1);
-        lNumber+=1;
+        see2 = read(0, &nextchar, 1);
+        lNumber++;
     }
     
     
-    qsort(allWords, wNumber, sizeof(char*), cmp);
+    if (option == 1)
+      {
+	qsort(allWords, wNumber, sizeof(char*), cmpUp);
+      }
+    else
+      {
+	qsort(allWords, wNumber, sizeof(char*), cmp);
+      }
     
-    
-    for(int i = 0; i < wNumber; i++)
-    {
-        int j = -1;
-        while (allWords[i][j] != ' ')
+    int tempcount = 0;
+    while (tempcount < wNumber)
+    {  
+        int q = -1;
+        while (allWords[tempcount][q] != ' ')
         {
-         j++;    
-         write(1,&allWords[i][j],1);
+         q++;    
+         write(1,&allWords[tempcount][q],1);
         }
+	tempcount++;
     }
   
-  for(int k = 0; k < wNumber; k++)
-    {
-        free(allWords[k]);
-    }
+  for(int count = 0; count < wNumber; count++)
+  {
+        free(allWords[count]);
+  }
     free(allWords);
     free(tempfile);
     exit(0);

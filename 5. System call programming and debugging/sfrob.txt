@@ -1,0 +1,185 @@
+Performace Comparison
+
+I first create files with different number
+of bytes included in them. So I first create
+a text file and use varying input lines.
+
+We then get the following data using the
+time command. 
+
+So I first used
+
+5 lines:
+
+sfrob:
+
+real    0m0.003s
+user    0m0.000s
+sys     0m0.002s
+
+
+sfrobu:
+
+real    0m0.004s
+user    0m0.000s
+sys     0m0.002s
+
+sfrobs:
+
+real    0m0.011s
+user    0m0.004s
+sys     0m0.004s
+
+sfrobu -f
+
+real    0m0.004s
+user    0m0.000s
+sys     0m0.002s
+
+sfrobs -f
+
+real    0m0.011s
+user    0m0.005s
+sys     0m0.004s
+
+------------------------------
+
+60 lines:
+
+sfrob:
+real    0m0.005s
+user    0m0.001s
+sys     0m0.001s
+
+sfrobu:
+
+real    0m0.010s
+user    0m0.001s
+sys     0m0.007s
+
+sfrobs:
+
+real    0m0.008s
+user    0m0.000s
+sys     0m0.007s
+
+
+sfrobu -f:
+
+real    0m0.009s
+user    0m0.000s
+sys     0m0.007s
+
+sfrobs -f:
+
+real    0m0.009s
+user    0m0.003s
+sys     0m0.005s
+
+-----------------------------
+
+500 lines:
+
+sfrob:
+
+real    0m0.007s
+user    0m0.003s
+sys     0m0.001s
+
+
+sfrobu:
+
+real    0m0.038s
+user    0m0.010s
+sys     0m0.025s
+
+sfrobs
+
+real    0m0.012s
+user    0m0.000s
+sys     0m0.009s
+
+sfrobs -f
+
+real    0m0.010s
+user    0m0.003s
+sys     0m0.005s
+
+sfrobu -f
+
+real    0m0.041s
+user    0m0.005s
+sys     0m0.033s
+
+--------------------------
+1000 lines
+
+sfrob
+
+real    0m0.011s
+user    0m0.005s
+sys     0m0.003s
+
+sfrobu
+
+real    0m0.114s
+user    0m0.018s
+sys     0m0.092s
+
+sfrobs
+
+real    0m0.014s
+user    0m0.001s
+sys     0m0.006s
+
+sfrobs -f
+
+real    0m0.029s
+user    0m0.004s
+sys     0m0.024s
+
+sfrobu -f
+
+real    0m0.117s
+user    0m0.016s
+sys     0m0.096s
+---------------------------
+
+What I see from this data is that the
+command sfrob barely wavers as it barely
+increases as there are is an increase for lines for
+input. Sfrobu on the other hand is significantly slower
+than sfrob. We also see that the sfrobs is slower than
+sfrob but not as slow as sfrobu. We know that the buffer
+makes things a lot easier and more efficient for sfrob
+which is why it runs a lot faster.
+
+We can use the strace command to figure out and estimate
+the number of comparisons as a function as input lines.
+In sfrobu, we see approximately a 2:1 ratio which makes
+sense because both a read and write must be made.
+We see that for sfrob it appears to be around 1 comparison
+for every 3300 characters, but this only holds for larger
+files. 
+
+
+In terms of how all the programs measure against each other we
+still see that sfrob is the fastest, followed by sfrobs. The
+slightly slower times may be attributed to the fact that 
+it runs an interpretive language (bash) which takes more time
+in terms of running the commands. 
+
+The -f flags didn't affect it so much in the small input lines,
+but as they got bigger they started to become a bigger factor
+in terms of slowing the program down as the input lines got larger.
+
+As a synopsis we can say that in terms of performance it ranks like this:
+
+1) sfrob (Buffered -very efficient -Chunks of data at a time)
+
+2) sfrobs (scripting language. Slightly slower but still effective).
+
+3) sfrobu (Unbuffered, has to process everything one character at a time).
+
+And the flag -f affects performance as the input lines get bigger. 
+

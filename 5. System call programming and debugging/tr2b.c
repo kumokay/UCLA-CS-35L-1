@@ -43,24 +43,26 @@ int main(int argc, char *argv[])
 
     }
   }
-
+  int flag = 0;
   char curr = getchar(); 
   checkError();
   while (curr != EOF)
   {
-    bool flag = true;
+    // bool flag = true;
 
     for (int counter = 0; counter < strlen(from); counter++)
     {
       if (curr == from[counter]){
 	putchar(to[counter]);
 	checkError();
-	flag = false;
+	flag = 1;
 	break;
       }
+      else
+	flag = 0;
     }
 
-    if (flag)
+    if (!flag)
     {
       putchar(curr);
     }
