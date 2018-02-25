@@ -26,6 +26,7 @@
 #include <assert.h>
 #include <math.h>
 
+#include <pthread.h>
 
 static double dirs[6][3] =
 { {1,0,0}, {-1,0,0}, {0,1,0}, {0,-1,0}, {0,0,1}, {0,0,-1} };
@@ -156,32 +157,12 @@ enum { max_color = 255 };
 /* z value for ray */
 enum { z = 1 };
 
-int
-main( int argc, char **argv )
+scene_t scene;
+int nthreads;
+float colors[height][width][3];
+
+void* processIt(void* thread_id)
 {
-    int nthreads = argc == 2 ? atoi( argv[1] ) : 0;
-
-    if( nthreads < 1 )
-    {
-      fprintf( stderr, "%s: usage: %s NTHREADS\n", argv[0], argv[0] );
-      return 1;
-    }
-
-    if( nthreads != 1 )
-    {
-      fprintf( stderr, "%s: Multithreading is not supported yet.\n", argv[0] );
-      return 1;
-    }
-
-    scene_t scene = create_sphereflake_scene( sphereflake_recursion );
-
-    /* Write the image format header */
-    /* P3 is an ASCII-formatted, color, PPM file */
-    printf( "P3\n%d %d\n%d\n", width, height, max_color );
-    printf( "# Rendering scene with %d spheres and %d lights\n",
-            scene.sphere_count,
-            scene.light_count );
-
     Vec3 camera_pos;
     set( camera_pos, 0., 0., -4. );
     Vec3 camera_dir;
@@ -200,7 +181,7 @@ main( int argc, char **argv )
                       : pixel_dy;
 
     /* for every pixel */
-    for( int px=0; px<width; ++px )
+    for( int px=*(int*)thread_id; px<width; px += nthreads )
     {
         const double x = pixel_dx * ((double)( px-(width/2) ));
         for( int py=0; py<height; ++py )
@@ -258,11 +239,74 @@ main( int argc, char **argv )
             /* write this pixel out to disk. ppm is forgiving about whitespace,
              * but has a maximum of 70 chars/line, so use one line per pixel
              */
-            printf( "%.0f %.0f %.0f\n",
-		    scaled_color[0], scaled_color[1], scaled_color[2] );
+          colors[px][py][0] = scaled_color[0];
+	  colors[px][py][1] = scaled_color[1];
+	  colors[px][py][2] = scaled_color[2];
         }
-        printf( "\n" );
     }
+    return NULL;
+}
+
+
+int
+main( int argc, char **argv )
+{
+    nthreads = argc == 2 ? atoi( argv[1] ) : 0;
+
+    if( nthreads < 1 )
+    {
+      fprintf( stderr, "%s: usage: %s NTHREADS\n", argv[0], argv[0] );
+      return 1;
+    }
+
+   
+
+     scene = create_sphereflake_scene( sphereflake_recursion );
+
+    /* Write the image format header */
+    /* P3 is an ASCII-formatted, color, PPM file */
+    printf( "P3\n%d %d\n%d\n", width, height, max_color );
+    printf( "# Rendering scene with %d spheres and %d lights\n",
+            scene.sphere_count,
+            scene.light_count );
+
+    pthread_t threads[nthreads];
+
+    int threadArray[nthreads];
+
+    for ( int counter =0; counter < nthreads; counter++)
+    {
+      threadArray[counter] = counter;
+
+      int temp = pthread_create(&threads[counter], NULL, processIt, &threadArray[counter]);
+      if (temp)
+      {
+	fprintf(stderr,"Error creating threads.\n");
+	exit(1);
+      }
+
+    }
+
+    for (int counter = 0; counter < nthreads; counter++)
+    {
+      int temp = pthread_join(threads[counter], NULL);
+      if (temp)
+      {
+	fprintf(stderr, "Error joining threads\n");
+	exit(1);
+      }
+    }
+
+    for(int i = 0; i < width; i++)
+    {
+  	for(int j = 0; j < height; j++)
+	{
+  	  	printf("%.0f %.0f %.0f\n",
+  	  		colors[i][j][0], colors[i][j][1], colors[i][j][2]);
+	}
+	printf("\n");
+    }
+    
 
     free_scene( &scene );
 
