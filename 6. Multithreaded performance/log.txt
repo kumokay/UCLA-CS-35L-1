@@ -1,0 +1,75 @@
+Michael Gee
+004800083
+
+I first check my sort version to see to find out
+if my sort has a sufficient version:
+
+sort --version
+
+I then made a text file generating 10,000,000 random
+preciscion floating number using /dev/urandom
+
+I then use the od command with option -N and -f to
+get the desired number necessary. I also use the
+number 40,000,000 bytes which is equivalent to
+10000000 floating point numbers, due to each one
+having 4 bytes.
+
+I also have to use this command with
+sed and tr so that each floating point
+number is on its own line without any spaces. 
+
+Command:
+od -An -f -N 40000000 < /dev/urandom | tr -s ' ' '\n' > temp.txt
+
+When I look back and check with the command:
+
+wc -l
+
+and see that I get 10000000 temp.txt
+which is a good sign.
+
+I then test the time or sorting with
+sort -g and time -p
+and check using the command:
+
+time -p sort -g temp.txt > /dev/null
+
+real 27.86
+user 152.32
+sys 1.61
+
+I then test it with different numbers for
+the parallel option.
+
+time -p sort -g --parallel=1 temp.txt > /dev/null
+
+real 116.27
+user 116.06
+sys 0.20
+
+time -p sort -g --parallel=2 temp.txt > /dev/null
+
+real 62.86
+user 117.69
+sys 1.37
+
+time -p sort -g --parallel=4 temp.txt > /dev/null
+
+real 38.75
+user 128.71
+sys 0.44
+
+
+time -p sort -g --parallel=8 temp.txt > /dev/null
+
+real 26.94
+user 151.67
+sys 0.71
+
+We see that the real time each program takes
+decreases as we increase the thread count in
+terms of real time. We see that sys time and
+user time varies and does not have as much of a
+correlation as real time. The 1 thread count had the
+slowest while the 8 thread count had the fastest. 
