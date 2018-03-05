@@ -1,0 +1,201 @@
+I first use the instructions on piazza to reset my
+beaglebone. I follow this instructions and am able
+to see that I reset it completely. I ran into a few
+problems such as not being able to install
+due to not disabling signature enforcements
+and figuring out how to use the microSD adapter but
+other than that I was able to follow the instructions
+and get it to work. 
+
+1. My partner: Angela Li
+
+2/3. 
+
+I first login to the UCLA_WEB wifi by using the steps
+shown in piazza I first type in the host name 192.168.7.2
+as the host and type in root as the username.
+
+I then see that it asks for my password for which I then
+I just press enter because the default password is empty.
+I then issue the command
+passwd
+which then prompts me to enter my new password and
+retype it to which I pick "root".
+
+Enter new UNIX password:
+
+Retype new UNIX password:
+
+passwd: password updated successfully"
+
+I then close my window and then proceed to do the
+previous steps and am now prompted to give a password.
+
+4.
+
+I then use apt-get install update to
+update the database of apt-get and
+
+use the commands
+
+sudo apt-get update
+
+apt-get install xauth
+
+and 
+
+apt-get install xterm
+
+
+5. 
+I then use the command
+sudo connmanctl
+
+and logs me into this new interface.
+
+I then proceed to use these instructions:
+
+enable wifi
+
+scan wifi
+
+services
+
+agent on
+
+connect *UCLA_WEB long access point code*
+
+quit
+
+I am now logged on to the wifi which then
+
+allows me to see my own hostname:
+
+192.168.43.216
+
+which is under the network interface "wlan0"
+and labeled "inet addr" when I type in the command
+
+ifconfig 
+ 
+6.
+
+I then proceed to follow the instructions that were
+previously mentioned in #5 connecting the wi-fi
+except I now connect to Angela's phone hotspot and
+put in the password for the hotspot
+
+enable wifi
+
+scan wifi
+
+services
+
+agent on
+
+connect *Angela's long access code for hotspot on phone*
+
+Passphrase? 12345678
+
+quit
+
+7.
+
+I then find her own hostname and ssh into
+her board by
+
+ssh root@192.168.43.192
+
+I type in her password
+12345678
+
+and she logs into mine as well after I tell her
+my password which is root.
+
+8.
+I then log out using
+Control-D
+
+I then create a non-root account for my partner
+to log in. And I do this by adding
+a username using
+
+useradd michaelg
+
+passwd michaelg
+
+which proceeds to ask me for my password of which
+I type in "wow" twice.
+
+
+Enter new UNIX password:
+Retype new UNIX password:
+passwd: password updated successfully
+
+I then make a new directory mkdir and create
+a directory:
+
+mkdir /home/michaelg
+
+and then I use the chown command to change the
+owner of the file:
+
+chown michaelg /home/michaelg
+
+9.
+
+I now use ssh to get into her newly created account.
+
+ssh labPartner@192.168.43.192
+
+and type in her password and I am able to access
+her terminal using this command.
+
+She also does the same thing to me.
+
+10.
+
+In order to login without a password I first use the command:
+
+ssh-keygen
+
+and then
+
+ssh-copy-id labPartner@192.168.43.192
+
+which allows me to proceed to being able to log in to her account
+without using a password.
+
+So I then I type in again:
+
+ssh labPartner@192.168.43.192
+
+and now I'm able to login without a password!
+
+11.
+
+I then first go into my beaglebone using the -X option:
+
+ssh -X michaelg@192.168.43.216
+
+and then I go into her beaglebone:
+
+ssh -X labPartner@192.168.43.192
+
+and then I type in the xterm command but I get an error that
+says
+
+xterm Xt error: Can't open display: 
+xterm:  DISPLAY is not set
+
+I then proceed to reboot the board after 'X11 Forwarding no'
+is changed to yes and 'ForwardAgent yes' and 'ForwardX11 yes'
+is contained within the file. I also install
+'sudo apt-get install xvfb'. This allows me to run those commands
+again which essentailly now works and I get to see the desired
+shell window that displays on my host. 
+
+
+
+
+
