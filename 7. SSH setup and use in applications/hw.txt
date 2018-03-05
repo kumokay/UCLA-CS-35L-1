@@ -1,0 +1,32 @@
+1.
+  Yes the network is still secure.
+  If someone from another team were to gain hold of the data, they
+  would only be able to get the encrypted bytes that are running
+  through the networks.
+  Since they don't have the private key, they would be unable to
+  decrypt these bytes, thus making this safe. 
+
+      1) If the other teams were to hypothetically tap into mine
+      and my team's keystrokes, I would still be secure because
+      private keys are not dependent from the keystrokes. Even though
+      we get the same passphrase, the outputted private key would
+      be different. Thus, this is secure. 
+
+      2) If the other team had physicsal control of the USB that would
+      be dangerous because this allows them to gain access to my private
+      and public keys and allow them to decrypt all
+      the previously encrypted bytes.
+      Thus this  would no longer be a secure network. 
+
+2.
+  gpg --verify doesn't really verify that I made the tar file in question
+  because it solely comapares signature that is recieved by the public key.
+  If someone else were to say, get my public key, he  would easily
+  be allowed to use it as their own and gain access in creating the file
+  himself.
+  It does not verify as to whether I truly made this file or not. 
+
+
+  We can fix this problem by having a third party that keeps track
+  of the origin of the public key. This way we now have authentication on
+  the public key and track who the actual author is. 
