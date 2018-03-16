@@ -1,0 +1,148 @@
+1.
+emacs hw9.txt to create it.
+
+2.
+
+I then checkout a new branch
+and name it quote
+
+git checkout -b 'quote' 'v3.0'
+
+3.
+
+I then install the patches onto the new branch using the command:
+
+patch -p1 < ../quote-3.0-patch.txt
+
+
+patching file src/cmp.c
+patching file src/diff.c
+patching file src/diff3.c
+patching file src/dir.c
+patching file src/sdiff.c
+patching file src/util.c
+
+
+4.
+
+I click the link to figure out how to use the emacs command:
+
+C-x 4 a
+
+5.
+
+I then created the ChangeLog entry and pretty much copy for
+all of the files. 
+
+
+2018-03-12  Michael Kenneth Gee  <michaelg@lnxsrv09.seas.ucla.edu>
+
+        * util.c:  Grave accent converted to apostrophe in string constant.
+
+        * sdiff.c: Grave accent converted to apostrophe in string constant.
+
+        * dir.c: Grave accent converted to apostrophe in string constant.
+
+        * diff3.c: Grave accent converted to apostrophe in string constant.
+
+        * diff.c: Grave accent converted to apostrophe in string constant.
+
+        * cmp.c: Grave accent converted to apostrophe in string constant.
+
+6.
+
+To commit changes to new branch I have to add it and then
+proceed to commit it using the commands:
+
+git add .
+git commit -F ChangeLog
+
+I then check the message which says it now has the ChangeLog file.
+
+7.
+
+Using the command:
+
+git format-patch -1 --stdout > formatted-patch.txt
+
+
+8.
+
+My partner is Angela Li.
+
+We traded our patch files so I first create a new branch to check
+out her code.
+
+git checkout -b 'partner' 'v3.0'
+
+and then I add the patch from winscp and add her patch naming it
+
+angela-formatted-patch.txt
+
+Once I am in the directory, I use the patch.
+
+git am angela-formatted-patch.txt
+
+I edit the tests/Makefile.am and replace the line
+
+; shell_or_perl_
+
+to
+
+;
+
+I then run the command: 
+chmod +x tests/binary tests/no-newline-at-eof
+
+
+./bootstrap
+
+I then apply the same patch that was provided
+in step 13 of the assingnment and run the
+commands:
+
+./configure
+make
+make check
+
+I then see that everything works.
+
+To check whether the patch works I run both:
+
+./src/diff . -
+./src/diff --help
+
+and both work, with only ' characters as opposed to the grave characters.
+
+9.
+
+I now heck that the ChangeLog worked for both me and  my partner
+
+I run the command make distdir, which then creates a directory that
+has my partner's patch. I then attempt to see my partner's changelog
+and see that my partner's patch was successful.
+
+10. 
+The final step was to use gitk so I first ssh with the command here:
+
+ssh -Y michaelg@lnxsrv09.seas.ucla.edu
+
+I then go into the directory
+
+cd ~eggert/src/gnu/emacs.
+
+I then run the command
+
+gitk
+
+and 
+
+find out that I get the result:
+
+Merge branch 'master' into xwidget 2015-01-25 12:19:27
+
+which seems that there is no newer merge here.
+
+
+
+

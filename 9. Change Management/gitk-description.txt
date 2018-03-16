@@ -1,0 +1,18 @@
+1. The top left window shows the commits and the relationships between
+with each of the branches.
+
+2.
+
+The top middle window shows who contributed to the particular commit
+(including Eggert himself)!
+
+3.
+
+The top right window shows the times and dates of all the commits
+on the tree
+
+4. The bottom left window shows the changelog of the commits
+
+5. The right window shows the files that have been modified by the
+commit.
+
